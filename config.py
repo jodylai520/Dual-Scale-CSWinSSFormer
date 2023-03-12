@@ -6,7 +6,7 @@ from utils import DiceLoss
 
 NCLS = 9
 MSUNet_synapse_version4_cls9_v1 = {
-    'save_path': '/home/lthpc/daniel/results/MS/MS_V9_4',
+    'save_path': '/home/lthpc/Daniel/results/MS/MS_V9_5',
     'device': 'cuda:1' if torch.cuda.is_available() else 'cpu',
     'epoch_num': 240,
     'num_classes': NCLS,
