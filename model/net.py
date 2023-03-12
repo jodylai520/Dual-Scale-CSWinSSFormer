@@ -312,7 +312,7 @@ class UNet(nn.Module):
                  num_classes=9,
                  num_heads_l=[4, 8, 16, 32],
                  num_heads_s=[8, 16, 32, 64],
-                 depth_s=[2, 2, 12, 2],
+                 depth_s=[2, 4, 32, 2],
                  depth_l=[2, 2, 6, 2],
                  split_size=[1, 2, 2, 7],
                  patch_size=4):
