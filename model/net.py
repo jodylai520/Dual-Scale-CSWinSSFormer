@@ -306,9 +306,9 @@ class DownSamplePart_1(nn.Module):
 
 class UNet(nn.Module):
     def __init__(self,
-                 img_size=224,
+                 img_size=256,
                  in_chans=1,
-                 embed_dim=32,
+                 embed_dim=64,
                  num_classes=9,
                  num_heads_l=[4, 8, 16, 32],
                  num_heads_s=[8, 16, 32, 64],
@@ -321,20 +321,28 @@ class UNet(nn.Module):
         self.subnet = SubNet(embed_dim=embed_dim, img_size=img_size, num_heads_s=num_heads_s, num_heads_l=num_heads_l,
                              depth_l=depth_l, depth_s=depth_s, split_size=split_size, patch_size=patch_size)
         self.predict_layer = nn.Conv2d(embed_dim, num_classes, kernel_size=1)
-
+        self.down = nn.Conv2d(in_chans,num_classes,kernel_size=1,stride=1,padding=0)
+        self.conv_relu = nn.Sequential(
+        nn.Conv2d(num_classes*2, num_classes, kernel_size=3, padding=1),
+        #coorAtt(out_channels),
+        nn.GELU()
+        )
     def forward(self, input):
         x_l, x_s = self.embed(input)  # B L C, B L C
         x = self.subnet(x_l, x_s)
         x = self.predict_layer(x)
         up = nn.UpsamplingBilinear2d(scale_factor=4)  # directly 4 * UpSample
-        output = up(x)
+        x = up(x)
+        down = self.down(input)
+        x = torch.cat((down,x),dim=1)
+        output=self.conv_relu(x)
         return output
 
 
 if __name__ == '__main__':
     x = torch.randn(2, 1, 256, 256).cuda()
 
-    model = UNet(img_size=256, embed_dim=32, patch_size=4, num_classes=9, in_chans=1).cuda()
+    model = UNet(img_size=256, embed_dim=64, patch_size=4, num_classes=9, in_chans=1).cuda()
 
     flops, params = profile(model=model, inputs=(x,))
     flops, params = clever_format([flops, params], '%.3f')
