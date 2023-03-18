@@ -4,7 +4,7 @@ from thop import profile, clever_format
 from trainer import Trainer_synapse
 from config import *
 
-net = Trainer_synapse(MS_synapse_version1_cls9_v10_1)
+# net = Trainer_synapse(MS_synapse_version1_cls9_v10_2)
 # net.test()
 # def print_model_size():
 #     x = torch.randn((2,1,224,224)).to(net.device)
