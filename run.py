@@ -1,10 +1,10 @@
 import torch
 
-from thop import profile,clever_format
+from thop import profile, clever_format
 from trainer import Trainer_synapse
 from config import *
 
-# net = Trainer_synapse(DAFNet_synapse_version1_cls9_v17)
+net = Trainer_synapse(MS_synapse_version1_cls9_v10_1)
 # net.test()
 # def print_model_size():
 #     x = torch.randn((2,1,224,224)).to(net.device)
@@ -17,4 +17,3 @@ from config import *
 #     y = net.model(x)
 #     print(x.shape, y.shape)
 #     print_model_size()
-

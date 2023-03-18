@@ -321,21 +321,19 @@ class UNet(nn.Module):
         self.subnet = SubNet(embed_dim=embed_dim, img_size=img_size, num_heads_s=num_heads_s, num_heads_l=num_heads_l,
                              depth_l=depth_l, depth_s=depth_s, split_size=split_size, patch_size=patch_size)
         self.predict_layer = nn.Conv2d(embed_dim, num_classes, kernel_size=1)
-        self.down = nn.Conv2d(in_chans,num_classes,kernel_size=1,stride=1,padding=0)
-        self.conv_relu = nn.Sequential(
-        nn.Conv2d(num_classes*2, num_classes, kernel_size=3, padding=1),
-        #coorAtt(out_channels),
-        nn.GELU()
-        )
+        # self.down = nn.Conv2d(in_chans,num_classes,kernel_size=1,stride=1,padding=0)
+        # self.conv_relu = nn.Sequential(
+        # nn.Conv2d(num_classes*2, num_classes, kernel_size=3, padding=1),
+        # #coorAtt(out_channels),
+        # nn.GELU()
+        # )
+
     def forward(self, input):
         x_l, x_s = self.embed(input)  # B L C, B L C
         x = self.subnet(x_l, x_s)
         x = self.predict_layer(x)
         up = nn.UpsamplingBilinear2d(scale_factor=4)  # directly 4 * UpSample
-        x = up(x)
-        down = self.down(input)
-        x = torch.cat((down,x),dim=1)
-        output=self.conv_relu(x)
+        output = up(x)
         return output
 
 
